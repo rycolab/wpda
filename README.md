@@ -29,12 +29,36 @@ pda = random_pda(Sigma=Sigma, Gamma=Gamma, Q=Q, R=Real, num_transitions=3)
 print(pda)
 ```
 Output:
-```python
+```bash
 1 -- a --> 0	[Y, S]	[X, S, X, Z]	0.036
 2 -- b --> 0	[X]	[S]	0.135
 2 -- a --> 0	[S, Z, X, Y]	[]	0.092
 ```
+### Stringsums
+```python
+from rayuela.pda.pda import PDA
+from rayuela.pda.parser import Parser
 
+pda = PDA(R=Real)
+# initial and final states
+pda.set_I(State('0'), Real.one)
+pda.set_F(State('2'), Real.one)
+# add transitions
+pda.add(Real(0.18), State('0'), Sym("a"), State('1'), (NT("X"),))
+pda.add(Real(0.23), State('1'), Sym("a"), State('2'), (S,), *(NT("X"),))
+
+print(pda)
+# compute stringsum
+parser = Parser(pda)
+print(parser.parse("aa", strategy="bottom-up"))
+```
+Output:
+```bash
+0 -- a --> 1	[]	[X]	0.18
+1 -- a --> 2	[X]	[S]	0.23
+
+0.0414
+```
 ---
 ## Cite
 
