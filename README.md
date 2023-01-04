@@ -14,6 +14,7 @@ $ pip install -e .
 ```python
 from rayuela.base.symbol import Sym
 from rayuela.base.semiring import Real
+from rayuela.fsa.state import State
 from rayuela.cfg.nonterminal import NT, S
 ```
 ### Random WPDA
