@@ -1,17 +1,15 @@
 from setuptools import setup
 
-
 install_requires = [
 	"numpy",
 	"frozendict",
 	"frozenlist",
 	"pyconll",
 	"nltk",
-	# needed for the tests
-	"dill", # pickle package is not able to pickle the FSAs
+	"dill",
 	"pytest",
 	"ply",
-	"tqdm" #Helper for generating test fsas
+	"tqdm"
 ]
 
 

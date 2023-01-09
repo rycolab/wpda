@@ -4,8 +4,10 @@ from collections import defaultdict as dd
 from rayuela.base.symbol import ε
 from rayuela.base.semiring import Real, Boolean
 
-# from rayuela.pda.examples import Examples
 from rayuela.pda.allsum import Allsum
+
+from rayuela.cfg.nonterminal import NT
+from rayuela.fsa.state import State
 
 class Parser:
 
@@ -18,7 +20,7 @@ class Parser:
         submission `Algorithms for Weighted Pushdown Automata`"""
         # WPDA must be in normal form
         assert self.pda.in_cnf(strategy="bottom-up")
-
+        print(self.pda.in_cnf(strategy="bottom-up"))
         N = len(input)
 
         # initialization
@@ -173,8 +175,3 @@ class Parser:
         else:
             raise NotImplementedError
 
-
-if __name__ == '__main__':
-    pda = Examples().nullary_removal_example(Boolean)
-    parser = Parser(pda)
-    print(parser.parse("aa"))

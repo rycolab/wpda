@@ -6,13 +6,10 @@ from rayuela.base.semiring import Semiring, Boolean
 from rayuela.base.symbol import Sym, ε
 from rayuela.base.misc import straight
 
-from rayuela.fsa.fsa import FSA
 from rayuela.fsa.state import State
 
-from rayuela.cfg.exceptions import InvalidProduction
 from rayuela.cfg.nonterminal import NT, S, Triplet, Delta, Other
 from rayuela.cfg.production import Production
-from rayuela.cfg.treesum import Treesum
 
 
 class CFG:

@@ -6,9 +6,9 @@ from rayuela.cfg.nonterminal import Slash, NT, S
 
 from rayuela.pda.allsum import Allsum
 
+from rayuela.fsa.state import State
 from rayuela.fsa.fsa import FSA
 from rayuela.fsa.pathsum import Pathsum
-from rayuela.fsa.state import State
 
 from itertools import product
 
@@ -18,44 +18,6 @@ class Transformer:
     def __init__(self):
         pass
 
-    def _reconstitute(pda, cfg, recovery):
-        from rayuela.pda.pda import PDA
-
-        seen = set([])
-        npda = PDA(R=cfg.R)
-        for p, w in cfg.P:
-            if p in recovery:
-                rule = recovery[p]
-                if rule not in seen:
-                    (i, a, k, head, body) = rule
-                    npda.add(w, i, a, k, head, *body)
-                    seen.add(rule)
-
-        for p, w in pda.I:
-            npda.set_I(p, w)
-        for p, w in pda.F:
-            npda.set_F(p, w)
-
-        return npda
-
-    def trim(pda):
-        cfg, recovery = pda.to_cfg()
-        return Transformer._reconstitute(pda, cfg.trim(), recovery)
-
-    def push(pda):
-        from rayuela.pda.pathsum import Pathsum
-        β = Pathsum(pda).backward()
-        print(β)
-        return Transformer._push(pda, β)
-
-    def _push(pda, V):
-        npda = pda.spawn()
-        for i in pda.Q:
-            npda.set_I(i, pda.λ[i] * V[i])
-            npda.set_F(i, ~V[i] * pda.ρ[i])
-        for (i, a, j, head, body), w in pda.arcs:
-            npda.add(~V[i] * w * V[j], i, a, j, head, *body)
-        return npda
 
     def binarize(pda, strategy="bottom-up"):
         """Creates an equivalent WPDA whose transitions are k-pop, 1-push, k <= 2,
@@ -234,99 +196,26 @@ class Transformer:
         else:
             raise NotImplementedError
 
-	# def remove_nullary(pda):
-	# 	R = pda.R
-	# 	one, zero = R.one, R.zero
-	#
-	# 	npda = pda.spawn()
-	# 	rpda = pda.spawn()
-	#
-	# 	orig_cfg, _ = pda.to_cfg()
-	# 	orig_treesum = orig_cfg.treesum()
-	# 	print(orig_treesum)
-	#
-	# 	# TODO: use to_push to actually make it bottom-up
-	# 	# bottom_up_pda = pda.to_push()
-	# 	bottom_up_pda = pda
-	#
-	# 	for (i, a, j, head, body), w in bottom_up_pda.arcs:
-	# 		assert len(head) == 1, "Not a bottom-up WPDA"
-	# 		if a == ε:
-	# 			repeat = 0 if body == None else len(body)
-	# 			for eps_vals in product((True, False), repeat=repeat):
-	# 				eps = all(eps_vals)
-	# 				nbody = tuple([Slash(eps_val, nt) for eps_val, nt in zip(eps_vals, body)])
-	# 				nhead = (Slash(eps, head[0]), )
-	# 				npda.add(w, i, a, j, nhead, *nbody)
-	# 		else:
-	# 			assert isinstance(head[0], NT), "Head is not a non terminal"
-	# 			assert all(isinstance(nt, NT) for nt in body), "Body is not tuple of non terminals"
-	# 			# add i --- a,w; Y_!ε Z_!ε -> X_!ε ---> j
-	# 			npda.add(w, i, a,  j, (Slash(False, head[0]),), *tuple([Slash(False, nt) for nt in body]))
-	#
-	# 	# set the same initial and final weights
-	# 	for q, w in bottom_up_pda.I:
-	# 		npda.set_I(q, w)
-	#
-	# 	for q, w in bottom_up_pda.F:
-	# 		npda.set_I(q, w)
-	#
-	# 	cfg, _ = npda.to_cfg()
-	# 	treesum = Treesum(cfg)
-	# 	treesum_table = treesum.table()
-	#
-	# 	eps_treesums = {}
-	# 	for nt, w in treesum_table.items():
-	# 		if nt != S:
-	# 			if nt.X[1].Y:
-	# 				eps_treesums[nt] = w
-	# 	print(eps_treesums)
-	#
-	# 	# remove rules with X_eps on the rhs and remove symbols with eps from lhs
-	# 	for (i, a, j, head, body), w in npda.arcs:
-	# 		assert len(head) == 1, "Not a bottom-up WPDA"
-	# 		if head[0].Y:
-	# 			# add i --- ε, ε->ε ---> j
-	# 			for elem in eps_treesums:
-	# 				i, nt, j = elem.X
-	# 				if nt == head[0]:
-	# 					rpda.add(one, i, ε, j, ())
-	# 		else:
-	# 			nbody = (nt for nt in body if nt.Y == False)
-	# 			# t = sum([w for elem, w in eps_treesums.items() if (elem.X[2] == i and elem.X[1] in body)], start=zero)
-	# 			t = sum([w for elem, w in eps_treesums.items() if elem.X[1] in body], start=zero)
-	# 			rpda.add(t * w, i, a, j, head, *nbody)
-	#
-	# 	for q, w in npda.I:
-	# 		npda.set_I(q, w)
-	#
-	# 	for q, w in npda.F:
-	# 		npda.set_I(q, w)
-	#
-	# 	# for (i, a, j, head, body), w in rpda.arcs:
-	# 	# 	print(head, body, w)
-	# 	ncfg, _ = rpda.to_cfg()
-	# 	ncfg_treesum = ncfg.treesum()
-	# 	print(ncfg_treesum)
-	# 	assert orig_treesum == ncfg_treesum
-
 if __name__ == '__main__':
 
     from rayuela.base.symbol import Sym
     from rayuela.base.semiring import Real
-
     from rayuela.cfg.nonterminal import NT, S
-    from rayuela.cfg.random import random_cfg, random_cfg_cnf
-    from rayuela.cfg.transformer import Transformer as TransformerCFG
+    from rayuela.pda.pda import PDA
+    from rayuela.pda.parser import Parser
 
-    Sigma = set([Sym("a"), Sym("b"), Sym("c")])
-    V = set([S, NT("X"), NT("Y"), NT("Z")])
+    pda = PDA(R=Real)
 
-    cfg = random_cfg_cnf(Sigma, V, R=Real)
-    pda = cfg.bottom_up()
+    pda.set_I(State('0'), Real.one)
+    pda.set_F(State('3'), Real.one)
+
+    pda.add(Real(0.18), State('0'), Sym("a"), State('1'), (NT("Y"),))
+    pda.add(Real(0.23), State('1'), ε, State('2'), (NT("X"),), *(NT("Y"),))
+    pda.add(Real(0.23), State('2'), Sym("a"), State('3'), (S,), *(NT("X"),))
+
+    print(pda)
+
+    parser = Parser(pda)
+    print(parser.parse("aa", strategy="bottom-up"))
 
 
-    transformer = TransformerCFG()
-    ncfg = transformer.nullaryremove(pda.to_cfg()).trim()
-    ucfg = transformer.unaryremove(ncfg).trim()
-    print(ucfg)
