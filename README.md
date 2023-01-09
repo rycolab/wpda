@@ -88,6 +88,6 @@ Natural Language Processing_. Association for Computational Linguistics.
 ```
 ---
 ## Contact
-To ask questions or report problems, please open an [issue](https://github.com/rycolab/wpda/issues).
+To ask questions or report problems, please open an [issue](https://github.com/rycolab/wpda/issues) or email [alexandra.butoi@inf.ethz.ch](mailto:alexandra.butoi@inf.ethz.ch).
 
 
