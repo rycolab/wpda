@@ -1,16 +1,12 @@
 from collections import defaultdict as dd
-from itertools import product
 from frozendict import frozendict
-from functools import reduce
 
 from rayuela.base.semiring import Boolean
-from rayuela.base.symbol import Sym, ε
+from rayuela.base.symbol import ε
 
 from rayuela.fsa.state import State
 
-from rayuela.cfg.cfg import CFG
-from rayuela.cfg.nonterminal import NT, S, bottom
-from rayuela.cfg.production import Production
+from rayuela.cfg.nonterminal import S
 
 class PDA:
 

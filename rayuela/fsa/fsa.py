@@ -1,17 +1,14 @@
 from typing import Tuple, Generator
 import copy
 from frozendict import frozendict
-from itertools import product
 
-from collections import Counter, defaultdict as dd
+from collections import defaultdict as dd
 
 from rayuela.base.semiring import Boolean, Semiring, String, ProductSemiring
 from rayuela.base.symbol import Sym, ε
 
-from rayuela.fsa.state import State, PairState
+from rayuela.fsa.state import State
 from rayuela.fsa.pathsum import Pathsum, Strategy
-
-from rayuela.cfg.nonterminal import S
 
 
 class FSA:

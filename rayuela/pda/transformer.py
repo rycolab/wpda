@@ -2,7 +2,7 @@ from collections import defaultdict as dd
 
 from rayuela.base.symbol import ε
 
-from rayuela.cfg.nonterminal import Slash, NT, S
+from rayuela.cfg.nonterminal import Slash
 
 from rayuela.pda.allsum import Allsum
 

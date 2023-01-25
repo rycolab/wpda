@@ -3,8 +3,6 @@ import random
 from rayuela.base.symbol import ε
 from rayuela.base.misc import _random_weight as rw
 
-from rayuela.cfg.nonterminal import S
-
 from rayuela.pda.pda import PDA
 
 

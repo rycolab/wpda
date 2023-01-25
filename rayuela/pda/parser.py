@@ -2,12 +2,8 @@ from itertools import product
 from collections import defaultdict as dd
 
 from rayuela.base.symbol import ε
-from rayuela.base.semiring import Real, Boolean
 
 from rayuela.pda.allsum import Allsum
-
-from rayuela.cfg.nonterminal import NT
-from rayuela.fsa.state import State
 
 class Parser:
 
