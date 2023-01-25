@@ -60,6 +60,37 @@ Output:
 
 0.0414
 ```
+### Binarization
+```python
+pda = PDA(R=Real)
+# initial and final states
+pda.set_I(State('0'), Real.one)
+pda.set_F(State('2'), Real.one)
+
+# add transitions
+pda.add(Real(0.18), State('0'), Sym("a"), State('1'), (NT("X"),))
+pda.add(Real(0.23), State('1'), Sym("a"), State('2'), (S,), *(NT("X"),NT("Y"),NT("Z"),NT("W")))
+
+# binarize
+npda = pda.binarize(strategy="bottom-up")
+print(npda)
+```
+Output:
+```bash
+0 -- a --> 1	[]	[X]	0.18
+1 -- a --> @3	[X, Y]	[Y]	0.23
+@3 -- ε --> @4	[Y, Z]	[Z]	1.0
+@4 -- ε --> @5	[Z, W]	[W]	1.0
+@5 -- ε --> 2	[Z, W]	[S]	1.0
+```
+### Unary Removal
+```python
+
+```
+Output:
+```bash
+
+```
 ---
 ## Cite
 

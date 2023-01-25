@@ -137,6 +137,10 @@ class FSA:
             if w != self.R.zero:
                 yield q, w
 
+    @property
+    def num_states(self):
+        return len(self.Q)
+
     def arcs(self, i, no_eps=False, nozero=True):
         for a, T in self.δ[i].items():
             if no_eps and a == ε:
