@@ -85,11 +85,24 @@ Output:
 ```
 ### Unary Removal
 ```python
+pda = PDA(R=Real)
+# initial and final states
+pda.set_I(State('0'), Real.one)
+pda.set_F(State('3'), Real.one)
 
+# add transitions
+pda.add(Real(0.18), State('0'), Sym("a"), State('1'), (NT("Y"),))
+pda.add(Real(0.35), State('1'), ε, State('2'), (NT("X"),), *(NT("Y"),))
+pda.add(Real(0.23), State('2'), Sym("a"), State('3'), (S,), *(NT("X"),))
+
+# remove unaries
+npda = pda.remove_unary(strategy="bottom-up")
+print(npda)
 ```
 Output:
 ```bash
-
+0 -- a --> 2	[]	[X]	0.063
+2 -- a --> 3	[X]	[S]	0.23
 ```
 ---
 ## Cite

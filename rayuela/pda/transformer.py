@@ -87,10 +87,14 @@ class Transformer:
             for (p, a, q, head, body), w in pda.arcs:
                 if a != ε:
                     X = head[0]
+                    changed = False
                     for r in pda.Q:
                         for Y in pda.Gamma:
                             if (State((q, X)), State((r, Y))) in U:
                                 npda.add(w * U[State((q, X)), State((r, Y))], p, a, r, (Y,), *body)
+                                changed = True
+                    if not changed:
+                        npda.add(w, p, a, q, head, *body)
                 elif body is not None and len(body) != 1:
                     npda.add(w, p, a, q, head, *body)
         #TODO: check this again
@@ -203,19 +207,20 @@ if __name__ == '__main__':
     from rayuela.cfg.nonterminal import NT, S
     from rayuela.pda.pda import PDA
     from rayuela.pda.parser import Parser
+    from rayuela.base.symbol import ε
 
     pda = PDA(R=Real)
-
+    # initial and final states
     pda.set_I(State('0'), Real.one)
     pda.set_F(State('3'), Real.one)
 
+    # add transitions
     pda.add(Real(0.18), State('0'), Sym("a"), State('1'), (NT("Y"),))
-    pda.add(Real(0.23), State('1'), ε, State('2'), (NT("X"),), *(NT("Y"),))
+    pda.add(Real(0.35), State('1'), ε, State('2'), (NT("X"),), *(NT("Y"),))
     pda.add(Real(0.23), State('2'), Sym("a"), State('3'), (S,), *(NT("X"),))
-
     print(pda)
-
-    parser = Parser(pda)
-    print(parser.parse("aa", strategy="bottom-up"))
+    print()
+    npda = pda.remove_unary(strategy="bottom-up")
+    print(npda)
 
 
